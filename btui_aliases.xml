@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<AliasPackage>
+		<AliasGroup isActive="yes" isFolder="yes">
+			<name>btui</name>
+			<script></script>
+			<command></command>
+			<packageName>btui</packageName>
+			<regex></regex>
+			<Alias isActive="yes" isFolder="no">
+				<name>Update view</name>
+				<script>send("hudinfo gs;;hudinfo t 20;;hudinfo c", false)
+</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^update$</regex>
+			</Alias>
+		</AliasGroup>
+	</AliasPackage>
+</MudletPackage>

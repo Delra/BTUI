@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<KeyPackage>
+		<KeyGroup isActive="yes" isFolder="yes">
+			<name>btui</name>
+			<packageName>btui</packageName>
+			<script></script>
+			<command></command>
+			<keyCode>0</keyCode>
+			<keyModifier>0</keyModifier>
+			<KeyGroup isActive="yes" isFolder="yes">
+				<name>Mech Command</name>
+				<packageName></packageName>
+				<script></script>
+				<command></command>
+				<keyCode>-1</keyCode>
+				<keyModifier>-1</keyModifier>
+				<KeyGroup isActive="yes" isFolder="yes">
+					<name>Heading</name>
+					<packageName></packageName>
+					<script></script>
+					<command></command>
+					<keyCode>-1</keyCode>
+					<keyModifier>-1</keyModifier>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 0</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 0</command>
+						<keyCode>56</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 60</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 60</command>
+						<keyCode>57</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 90</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 90</command>
+						<keyCode>54</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 120</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 120</command>
+						<keyCode>51</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 180</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 180</command>
+						<keyCode>50</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>heading 240</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 240</command>
+						<keyCode>49</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 270</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 270</command>
+						<keyCode>52</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Heading 300</name>
+						<packageName></packageName>
+						<script></script>
+						<command>heading 300</command>
+						<keyCode>55</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+				</KeyGroup>
+				<KeyGroup isActive="yes" isFolder="yes">
+					<name>Need for Speed</name>
+					<packageName></packageName>
+					<script></script>
+					<command></command>
+					<keyCode>-1</keyCode>
+					<keyModifier>-1</keyModifier>
+					<Key isActive="yes" isFolder="no">
+						<name>HALT</name>
+						<packageName></packageName>
+						<script></script>
+						<command>speed 0</command>
+						<keyCode>48</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>ADVANCE</name>
+						<packageName></packageName>
+						<script></script>
+						<command>speed walk</command>
+						<keyCode>46</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>CHARGE</name>
+						<packageName></packageName>
+						<script></script>
+						<command>speed run</command>
+						<keyCode>16777221</keyCode>
+						<keyModifier>536870912</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Back up</name>
+						<packageName></packageName>
+						<script></script>
+						<command>speed back</command>
+						<keyCode>48</keyCode>
+						<keyModifier>603979776</keyModifier>
+					</Key>
+				</KeyGroup>
+				<Key isActive="yes" isFolder="no">
+					<name>Pew Pew</name>
+					<packageName></packageName>
+					<script></script>
+					<command>.f</command>
+					<keyCode>47</keyCode>
+					<keyModifier>536870912</keyModifier>
+				</Key>
+				<Key isActive="yes" isFolder="no">
+					<name>Pew Pew Pew</name>
+					<packageName></packageName>
+					<script></script>
+					<command>.ff</command>
+					<keyCode>42</keyCode>
+					<keyModifier>536870912</keyModifier>
+				</Key>
+				<KeyGroup isActive="yes" isFolder="yes">
+					<name>Twist that torso about</name>
+					<packageName></packageName>
+					<script></script>
+					<command></command>
+					<keyCode>-1</keyCode>
+					<keyModifier>-1</keyModifier>
+					<Key isActive="yes" isFolder="no">
+						<name>Twist left</name>
+						<packageName></packageName>
+						<script></script>
+						<command>rottorso l</command>
+						<keyCode>52</keyCode>
+						<keyModifier>671088640</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Twist right</name>
+						<packageName></packageName>
+						<script></script>
+						<command>rottorso r</command>
+						<keyCode>54</keyCode>
+						<keyModifier>671088640</keyModifier>
+					</Key>
+					<Key isActive="yes" isFolder="no">
+						<name>Recenter</name>
+						<packageName></packageName>
+						<script></script>
+						<command>rottorso c</command>
+						<keyCode>53</keyCode>
+						<keyModifier>671088640</keyModifier>
+					</Key>
+				</KeyGroup>
+			</KeyGroup>
+			<Key isActive="yes" isFolder="no">
+				<name>toggle HUD updates</name>
+				<packageName></packageName>
+				<script>if not hud.active then
+  sendAll("hudinfo key="..tonumber(math.random(999)), "hudinfo wl", "hudinfo oas", "hudinfo we", "hudinfo as")
+  enableTimer("Update regularly")
+  hud.active = true
+else
+  disableTimer("Update regularly")
+  hud.active = false
+end</script>
+				<command></command>
+				<keyCode>72</keyCode>
+				<keyModifier>67108864</keyModifier>
+			</Key>
+		</KeyGroup>
+	</KeyPackage>
+</MudletPackage>

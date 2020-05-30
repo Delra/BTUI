@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<ScriptPackage>
+		<ScriptGroup isActive="yes" isFolder="yes">
+			<name>btui</name>
+			<packageName>btui</packageName>
+			<script></script>
+			<eventHandlerList />
+			<Script isActive="yes" isFolder="no">
+				<name>hudinfo</name>
+				<packageName></packageName>
+				<script>-- our namespace
+hudinfo = hudinfo or {}
+hudinfo.states = hudinfo.states or {}
+hudinfo.functions = hudinfo.functions or {}
+hudinfo.info = hudinfo.info or {}
+
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>hud textmap test</name>
+				<packageName></packageName>
+				<script>function hexmap(dermap)
+  -- format hudinfo.states.map.hexes[y][x]
+  echo("hello?\n")
+  --display(ipairs(dermap))
+  for y, x in ipairs(dermap) do
+    for _, info in ipairs(x) do
+      local tile = string.format("[%s%s]", info.terrain, info.elevation)
+      echo(tile)
+    end--]]
+    echo('\n')
+  end
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Tactical HUD: User Windows</name>
+				<packageName></packageName>
+				<script>uw = uw or {}
+if not uw.map then
+  uw.map = Geyser.UserWindow:new({
+    name = "uw.map",
+    height = 320,
+    width = 400,
+    titleText = "Tactical Map",
+    restoreLayout = true,
+  })
+end
+
+if not uw.armor then
+  uw.armor = Geyser.UserWindow:new({
+    name = "uw.armor",
+    height = 320,
+    width = 400,
+    titleText = "Armor Status",
+    restoreLayout = true,
+  })
+end
+
+if not uw.target_armor then
+  uw.target_armor = Geyser.UserWindow:new({
+    name = "uw.target_armor",
+    height = 320,
+    width = 400,
+    titleText = "Target Armor",
+    restoreLayout = true,
+  })
+end
+
+if not uw.weapons then
+  uw.weapons = Geyser.UserWindow:new({
+    name = "uw.weapons",
+    height = 100,
+    width = 350,
+    titleText = "Weapon Status",
+    restoreLayout = true,
+  })
+end
+
+if not uw.contacts then
+  uw.contacts = Geyser.UserWindow:new({
+    name = "uw.contacts",
+    height = 100,
+    width = 350,
+    titleText = "Contacts",
+    restoreLayout = true,
+  })
+end
+
+if not uw.qstatus then
+  uw.qstatus = Geyser.UserWindow:new({
+    name = "uw.qstatus",
+    height = 100,
+    width = 250,
+    titleText = "Quick Status",
+    restoreLayout = true,
+  })
+end</script>
+				<eventHandlerList />
+				<Script isActive="yes" isFolder="no">
+					<name>Ye ol' Tokens</name>
+					<packageName></packageName>
+					<script>tokens = tokens or {}
+tokens.player = Geyser.Label:new({
+  name = "tokens.player",
+  x = 15, y = 15,
+  width = 10,
+  height = 10,
+}, uw.map)</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Tactical Map GUI Element</name>
+					<packageName></packageName>
+					<script>hud = hud or {}
+hud.tiles = hud.tiles or {}
+hud.contacts = hud.contacts or {}
+-- create a container for a 14 x 20 map of tiles. Yes, this is totally necessary. The dimensions will have to be 280 x 400.. plus some... for squares... 
+hud.container = Geyser.Container:new({
+  name = "hud.container",
+  x = 0, y = 0,
+  height = 260, --outdated, need to be bigger
+  width = 400, -- outdated, need to be bigger
+}, uw.map)
+
+function spawnTiles(map)
+  map = map or { { {represents = {x =0, y = 0} } } }
+-- fix this; errors on load until you reload the script
+  local cur = map[1][1].represents
+-- create the tiles one at a time, with a .5 offset between tiles, I guess.
+  local yoff = 0 -- how far down we're putting this tile
+  for i=1, 14 do
+    local xoff = 0 -- how far right we're putting this tile
+    hud.tiles[i] = {}
+    hud.contacts[i] = {}
+    local odd = cur.x%2
+    for n=1, 19 do
+      hud.tiles[i][n] = Geyser.Label:new({
+        name = "hud.tiles."..i.."."..n,
+        width = 40, height = 40,
+        x = xoff, y = yoff + (n % 2 == odd and 0 or 20),
+      }, hud.container)
+      hud.tiles[i][n]:setStyleSheet([[
+        background-color: blue;
+        border-radius: 20px;]])
+      hud.contacts[i][n] = Geyser.Label:new({
+        name = "hud.contacts."..i.."."..n,
+        width = 40, height = 40,
+        x = xoff, y = yoff + (n%2 == odd and 0 or 20),
+      }, hud.container)
+      hud.contacts[i][n]:setStyleSheet([[
+        background-color: rgba(0, 0, 0, 0)
+      ]])
+      xoff = xoff + 30
+    end
+    yoff = yoff+40
+  end
+end
+spawnTiles()</script>
+					<eventHandlerList />
+					<Script isActive="yes" isFolder="no">
+						<name>Tactical Map Updated</name>
+						<packageName></packageName>
+						<script>local terrain_colors = {
+  [ [["]] ] = "darkGreen",
+  ["#"] = "lightGray",
+  ["%"] = "yellow",
+  ["&amp;"] = "red",
+  ["+"] = "white",
+  ["-"] = "cyan",
+  ["."] = "darkMagenta",
+  ["/"] = "gray",
+  [":"] = "darkRed",
+  ["="] = "black",
+  ["?"] = "yellow",
+  ["@"] = "darkGreen",
+  ["^"] = "goldenrod",
+  ["`"] = "green",
+  ["~"] = "darkBlue",
+}
+
+local terrain_conv = {
+  [ [["]] ] = "heavy_forest",
+  ["#"] = "road", -- road
+  ["%"] = "rough",
+  ["&amp;"] = "none", -- fire
+  ["+"] = "snow",
+  ["-"] = "ice",
+  ["."] = "plains",
+  ["/"] = "road", --bridge
+  [":"] = "road", -- smoke
+  ["="] = "road", --wall/pavement
+  ["?"] = "none",
+  ["@"] = "building",
+  ["^"] = "mountain",
+  ["`"] = "forest",
+  ["~"] = "water",
+}
+
+--todo: build a table based on the rows at pos.x-9 (min 0) to pos.x+10 and pos.y-7 (min 0) and pos.y+6 
+-- so for y-6, y+6 do for x-9, x+10 do ... end end
+function hud.buildViewTable2(map, x, y)
+  -- try again, in a more sane way: build the whole fucking thing from left to right, top to bottom!
+  -- create the 'y's, the rows
+  local startx = (x-8) &gt;= 0 and (x-8) or 0
+  local starty = (y-7) &gt;= 0 and (y-7) or 0
+  local vt = {}
+  for i=1, 14 do
+    local cur = hudinfo.states.current.pos
+    -- now create the 'x's, which are the columns
+    vt[i] = {}
+    --and fill each one in with the relevant data
+    for n=1, 19 do
+      local curx = startx+n-1
+      local cury = starty+i-1
+      curx = curx &gt;= 0 and curx or 0
+      cury = cury &gt;= 0 and cury or 0
+      local data
+      if not map[cury] then map[cury] = {} end
+      if not map[cury][curx] then map[cury][curx] = {terrain = "&amp;", elevation = "9", contacts = {} } end
+      data = map[cury][curx] or { terrain = "-", elevation = "-", contacts = {} }
+      vt[i][n] = data
+      if vt[i][n].terrain == "~" then vt[i][n].elevation = 0 - vt[i][n].elevation end
+      vt[i][n].represents = { x = curx, y = cury }
+      --if data.me then display(data) end
+    end
+  end
+  return vt
+end
+
+function hud.updateMap(map)
+  -- format hudinfo.states.map.hexes[y][x]
+  --echo("hello?\n")
+  --display(ipairs(dermap))
+  -- clear it all out
+  spawnTiles(map) 
+  for y, tiles in ipairs(hud.tiles) do 
+    for x, tile in ipairs(tiles) do 
+      tile:setStyleSheet([[border-radius: 10px; background-color: gray;]])
+      tile:echo('')
+    end
+  end
+  for y, columns in ipairs(map) do
+    for x, info in ipairs(columns) do
+      local tile = string.format("&lt;center&gt;%s", info.elevation) or ''
+      if hud.tiles[y] then
+        if hud.tiles[y][x] then
+        local files = string.format("%s/btui/", getMudletHomeDir())
+          if terrain_conv[info.terrain] == "none" then
+            hud.tiles[y][x]:setStyleSheet([[
+              background-color:rgba(0,0,0,0);
+              margin: 0.5px;]])
+          else
+            hud.tiles[y][x]:setStyleSheet([[
+              border-image: url(]]..files..terrain_conv[info.terrain]..[[);
+              margin: 0.5px;]])
+          end
+          hud.tiles[y][x]:echo(tile, "#FFFFFF", "c10")
+          if info.me then
+            tokens.player:changeContainer(hud.tiles[y][x])
+            --hud.tiles[y][x]:flash()
+            local cur=hudinfo.states.current
+            tokens.player:move(zero_to_position(tonumber(cur.bearing_to_center), tonumber(cur.range_to_center)))
+          end
+          --display(info.contacts)
+          hud.contacts[y][x].represents = info.represents 
+          hud.contacts[y][x]:setStyleSheet([[background-color: rgba(0,0,0,0)]])
+          hud.contacts[y][x]:echo('')
+        end
+      end
+    end--]]
+    --echo('\n')
+  end
+end</script>
+						<eventHandlerList />
+					</Script>
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>update_bearings</name>
+					<packageName></packageName>
+					<script>tactical_arc = Geyser.Label:new({
+  name = "tactical_arc",
+  height = 120, width = 120,
+  x = -65, y = -65,
+}, tokens.player)
+tactical_arc:setStyleSheet([[
+  background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(0, 115, 255, 0), stop:0.1 rgba(0, 115, 255, 0), stop:0.101 rgba(0, 115, 255, 134), stop:0.4 rgba(0, 115, 255, 134), stop:0.401 rgba(255, 255, 255, 0), stop:0.6 rgba(255, 252, 181, 0), stop:0.601 rgba(255, 0, 0, 134), stop:0.9 rgba(255, 0, 0, 131), stop:0.901 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+  border-radius: 60px;
+]])
+
+tactical_heading = Geyser.Label:new({
+  name = "tactical_heading",
+  height = 120, width = 120,
+  x = -65, y = -65,
+}, tokens.player)
+tactical_heading: setStyleSheet([[
+  background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(255, 255, 255, 0), stop:0.24 rgba(255,255,255, 0), stop:0.249 rgba(255, 37, 0, 255), stop:0.251 rgba(255,37,0,255), stop:0.26 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+  border-radius: 60px;
+]])
+
+tactical_desired_heading = Geyser.Label:new({
+  name = "tactical_desired_heading",
+  height = 120, width = 120,
+  x = -65, y = -65,
+}, tokens.player)
+tactical_desired_heading: setStyleSheet([[
+  background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(255, 255, 255, 0), stop:0.24 rgba(255,255,255, 0), stop:0.249 rgba(0, 255, 0, 255), stop:0.251 rgba(0,255,0,255), stop:0.26 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+  border-radius: 60px;
+]])
+
+function update_bearings(e, heading, twist)
+  local arc = (heading+twist)
+  local dheading = hudinfo.states.desired.heading
+  if arc &lt; 0 then arc = 360-math.abs(arc) end
+  tactical_heading:setStyleSheet([[
+    background-color: qconicalgradient(cx:0.5, cy:0.5, angle:-]]..heading..[[, stop:0 rgba(255, 255, 255, 0), stop:0.24 rgba(255,255,255, 0), stop:0.249 rgba(255, 37, 0, 255), stop:0.251 rgba(255,37,0,255), stop:0.26 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+    border-radius: 60px;
+  ]])
+  tactical_heading:changeContainer(tokens.player)
+  tactical_arc:changeContainer(tokens.player)
+  tactical_arc:setStyleSheet([[
+    background-color: qconicalgradient(cx:0.5, cy:0.5, angle:-]]..arc..[[, stop:0 rgba(0, 115, 255, 0), stop:0.1 rgba(0, 115, 255, 0), stop:0.101 rgba(0, 115, 255, 25), stop:0.4 rgba(0, 115, 255, 25), stop:0.401 rgba(255, 255, 255, 0), stop:0.6 rgba(255, 252, 181, 0), stop:0.601 rgba(255, 0, 0, 50), stop:0.9 rgba(255, 0, 0, 50), stop:0.901 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+    border-radius: 60px;
+  ]])
+  tactical_desired_heading:changeContainer(tokens.player)
+  tactical_desired_heading: setStyleSheet([[
+    background-color: qconicalgradient(cx:0.5, cy:0.5, angle:-]]..dheading..[[, stop:0 rgba(255, 255, 255, 0), stop:0.24 rgba(255,255,255, 0), stop:0.249 rgba(0, 255, 0, 120), stop:0.251 rgba(0,255,0,120), stop:0.26 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+    border-radius: 60px;
+  ]])
+  tokens.player:raiseAll()
+end</script>
+					<eventHandlerList>
+						<string>update ui bearings</string>
+					</eventHandlerList>
+				</Script>
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Points-from-center</name>
+				<packageName></packageName>
+				<script>function zero_to_position(bearing, distance)
+  local cos, sin = math.cos, math.sin
+  local zx, zy = 20, 20
+  
+  local back_bearing = bearing &gt;= 180 and bearing-180 or bearing+180
+  local bearing_rads = math.rad(back_bearing)
+  
+  local D = distance * 40 &lt;= 20 and distance * 40 or 20
+  
+  local x = zx + ( D * sin(bearing_rads) )
+  local y = zy - ( D * cos(bearing_rads) )
+  
+  return x-2.5, y-2.5
+end
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Contacts Handling</name>
+				<packageName></packageName>
+				<script>tokens = tokens or {}
+tokens.contacts = tokens.contacts or {}
+
+function represents(x, y)
+  for fy, row in ipairs(hud.contacts) do
+    for fx, tile in ipairs(row) do
+      if tile.represents.x == x and tile.represents.y == y then
+        return fx, fy
+      end
+    end
+  end 
+end
+
+function update_tokens()
+  for _, token in ipairs(tokens.contacts) do
+    token:hide()
+    if token.heading then token.heading:hide() end
+  end
+  for i=1, #hudinfo.states.contacts do
+    local contact = hudinfo.states.contacts[i]
+    if not tokens.contacts[i] then
+      tokens.contacts[i] = Geyser.Label:new({
+        name = "token.contacts."..i,
+        x = 0, y = 0,
+        width = 10, height = 10, 
+      }, hud.contacts[1][1])
+    end
+    --if not tokens.contacts[i].heading then
+      tokens.contacts[i].heading = Geyser.Label:new({
+        name = "tokens.contacts."..i..".heading",
+        x = -65, y = -65,
+        width = 120, height = 120,
+      }, tokens.contacts[i])
+      tokens.contacts[i].heading:setStyleSheet([[
+        background-color: qconicalgradient(cx:0.5, cy:0.5, angle:-]]..contact.heading..[[, stop:0 rgba(255, 255, 255, 0), stop:0.24 rgba(255,255,255, 0), stop:0.249 rgba(0, 0, 0, 255), stop:0.251 rgba(0,0,0,255), stop:0.26 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+        border-radius: 20px;
+      ]])
+    --end
+    local fx, fy = represents(tonumber(contact.x), tonumber(contact.y))
+    if fx then
+      tokens.contacts[i]:changeContainer(hud.contacts[fy][fx])
+      tokens.contacts[i]:echo(contact.id, "white", "c6")
+      tokens.contacts[i].heading:setStyleSheet([[
+        background-color: qconicalgradient(cx:0.5, cy:0.5, angle:-]]..contact.heading..[[, stop:0 rgba(255, 255, 255, 0), stop:0.239 rgba(255,255,255, 0), stop:0.24 rgba(100, 100, 100, 255), stop:0.26 rgba(100,100,100,255), stop:0.261 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+        border-radius: 20px;
+      ]])
+      tokens.contacts[i].heading:show()
+      tokens.contacts[i]:move(zero_to_position(tonumber(contact.bearing_to_center), tonumber(contact.range_to_center)))
+      tokens.contacts[i]:show()
+    end
+  end    
+end
+
+function update_contacts()
+  if not uw.contacts then return end
+  uw.contacts:clear()
+  for i=1, #hudinfo.states.contacts do
+    local contact = hudinfo.states.contacts[i]
+    if contact.id:title() == contact.id then color = "&lt;red&gt;" else color = "" end
+    --sensors arc [id] name x: x y: y z: z range: r bearing: b speed: s heading: h
+    uw.contacts:cecho(string.format("%s%s%s[%s] %s x: %2.f y: %2.f z: %2.f r: %2.2f b:%3.f s: %2.1f h:%3.f\n", color, contact.sensors, contact.arc, contact.id, contact.name, contact.x, contact.y, contact.z, contact.range, contact.bearing, contact.speed, contact.heading))
+  end
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>update_armor</name>
+				<packageName></packageName>
+				<script>function update_armor()
+  uw.armor:clear()
+  
+  if not hudinfo.states.armor then return end
+  local a = hudinfo.states.armor
+  local cur = a.current 
+  local max = a.max
+  
+  local slots = {"H", "LT", "CT", "RT", "LA", "RA", "LL", "RL"}
+  local front = {}
+  local internal = {}
+  for _, slot in ipairs(slots) do
+    front[slot] = build_slot(cur[slot].front, max[slot].front)
+    internal[slot] = build_slot(cur[slot].internal, max[slot].internal)
+  end
+  
+  local rear = {}
+  local rear_slots = {"LT", "CT", "RT"}
+  for _, slot in ipairs(rear_slots) do
+    rear[slot] = build_slot(cur[slot].rear, max[slot].rear)
+  end
+  
+  uw.armor:cecho("  [A R M O R]")
+  local s = string.format("\n\n     FRONT\n     %s\n %s%s%s\n%s/ /\\ \\%s\n   / /  \\ \\\n  %s  %s", front.H, front.LT, front.CT, front.RT, front.LA, front.RA, front.LL, front.RL)
+  uw.armor:cecho(s)
+  local r = string.format("\n\n     REAR\n %s%s%s", rear.LT, rear.CT, rear.RT)
+  uw.armor:cecho(r)
+  local int = string.format("\n\n   INTERNAL\n     %s\n %s%s%s\n%s/ /\\ \\%s\n   / /  \\ \\\n  %s  %s\n", internal.H, internal.LT, internal.CT, internal.RT, internal.LA, internal.RA, internal.LL, internal.RL)
+  uw.armor:cecho(int)
+  
+end
+
+function build_slot(current, max)
+  local percent = current/max
+  local color
+  if percent &gt; 0.75 then
+    color = "green"
+  elseif percent &gt; 0.5 then
+    color = "yellow"
+  elseif percent &gt; 0 then
+    color = "red"
+  end
+  
+  return string.format("&lt;white&gt;(&lt;%s&gt;%2.f&lt;white&gt;)", color or "white", current)
+end</script>
+				<eventHandlerList>
+					<string>update ui armor</string>
+				</eventHandlerList>
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Weapon status</name>
+				<packageName></packageName>
+				<script>function update_weapons()
+  uw.weapons:clear()
+  uw.weapons:echo("Name                Mn/Sm/Me/Lo Dmg Ht CD\n")
+  for i=0, #hudinfo.states.weaponstatus do
+    local weapon = hudinfo.states.weaponstatus[i]
+    uw.weapons:echo(weapon_string(weapon))
+  end
+end
+
+function weapon_string(weapon)
+  local info = hudinfo.info.weapons[tonumber(weapon.type)]
+  
+  local name = info.name
+  local ranges = string.format("%2.f/%2.f/%2.f/%2.f", info.minimum, info.short, info.medium, info.long)
+  local damage = info.damage
+  local heat = info.heat
+  local cd = weapon.status
+  
+  return ( string.format("%s%s%s%s%2.f%s%2.f%s%s\n", name, string.rep(" ", 20-string.len(name)), ranges, " ", damage, "  ", heat, " ", cd) )
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Quick Status</name>
+				<packageName></packageName>
+				<script>function update_qstatus()
+  if not hudinfo.states then return end
+  local current = hudinfo.states.current
+  local s = string.format("x: %2.f y: %2.f z: %2.f | speed: %2.2f | heading: %3.f", current.pos.x, current.pos.y, current.pos.z, current.speed, current.heading)
+  uw.qstatus:clear()
+  if hudinfo.states.static then
+    local static = hudinfo.states.static
+    local t = string.format("%s [%s] (%s)", static.name, static.reference, static.unit)
+    uw.qstatus:echo(t..'\n')
+  end
+  uw.qstatus:echo(s)
+  if hudinfo.states.heat then
+    local ch, dh = tonumber(hudinfo.states.heat.current), tonumber(hudinfo.states.heat.dissipation)/10
+    --formula for a bar: dh + min_bar &lt;=  ch or min_bar
+    uw.qstatus:cecho(string.format("\n&lt;grey&gt;:%s%s&lt;green&gt;:%s%s&lt;yellow&gt;:%s%s&lt;red&gt;:%s%s:", string.rep("|", ch &lt;= dh and ch or dh), string.rep(".", dh-ch &lt;= dh and dh-ch or dh), string.rep("|", ch-dh &lt;= 10 and ch-dh or 10), string.rep(".", dh+10-ch &lt;= 10 and dh+10-ch or 10), string.rep("|", ch-dh-15 &lt;= 5 and ch-dh-5 or 5), string.rep(".", dh+15-ch &lt;= 5 and dh+15-ch or 5), string.rep("|", ch-dh-35 &lt;= 20 and ch-dh-35 or 20), string.rep(".", dh+35-ch &lt;= 20 and dh+35-ch or 20)))
+  end
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Armor Scan</name>
+				<packageName></packageName>
+				<script>-- todo: create enemy armor scan trigger, process enemy armor scan trigger into target armor display, if feasible include 
+-- the name of the thing being scanned in the display.
+
+function update_asc()
+  if not hudinfo.target then return end
+  local asc = assert(hudinfo.target.armor, "update_asc: no armor found, what are you doing???")
+  local slots = {"H", "LT", "CT", "RT", "LA", "RA", "LL", "RL"}
+  local armor = {}
+  for _, slot in ipairs(slots) do
+    armor[slot] = {}
+    armor[slot].front = build_enemy_slot(asc[slot].front)
+    armor[slot].rear = build_enemy_slot(asc[slot].rear)
+    armor[slot].internal = build_enemy_slot(asc[slot].internal)
+  end
+  uw.target_armor:clear()
+  local front = string.format("[ T A R G E T ]\n     FRONT\n     %s\n %s%s%s\n%s/ /\\ \\%s\n   / /  \\ \\\n  %s  %s",
+    armor.H.front,
+    armor.LT.front,
+    armor.CT.front,
+    armor.RT.front,
+    armor.LA.front,
+    armor.RA.front,
+    armor.LL.front,
+    armor.RL.front)
+  local rear = string.format("     REAR\n %s%s%s", armor.LT.rear, armor.CT.rear, armor.RT.rear)
+  local internal = string.format("   INTERNAL\n     %s\n %s%s%s\n%s/ /\\ \\%s\n   / /  \\ \\\n  %s  %s",
+    armor.H.internal,
+    armor.LT.internal,
+    armor.CT.internal,
+    armor.RT.internal,
+    armor.LA.internal,
+    armor.RA.internal,
+    armor.LL.internal,
+    armor.RL.internal)
+    
+  uw.target_armor:cecho(front..'\n\n'..rear..'\n\n'..internal)
+end
+
+function build_enemy_slot(health)
+  local htc = {
+    O = "dark_green",
+    o = "green",
+    x = "yellow",
+    X = "red",
+  }
+  
+  local color = htc[health] or "gray"
+  
+  return string.format("&lt;gray&gt;(&lt;%s&gt;%s%s&lt;gray&gt;)", color, health, health)
+end</script>
+				<eventHandlerList />
+			</Script>
+		</ScriptGroup>
+	</ScriptPackage>
+</MudletPackage>
