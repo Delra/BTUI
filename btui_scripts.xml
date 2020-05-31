@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
+	<TriggerPackage />
+	<TimerPackage />
+	<AliasPackage />
+	<ActionPackage />
 	<ScriptPackage>
 		<ScriptGroup isActive="yes" isFolder="yes">
 			<name>btui</name>
@@ -130,6 +134,9 @@ function spawnTiles(map)
   map = map or { { {represents = {x =0, y = 0} } } }
 -- fix this; errors on load until you reload the script
   local cur = map[1][1].represents
+  if hud.old_rep then
+    if (hud.old_rep.x == cur.x) and (hud.old_rep.y == cur.y) then return end
+  end
 -- create the tiles one at a time, with a .5 offset between tiles, I guess.
   local yoff = 0 -- how far down we're putting this tile
   for i=1, 14 do
@@ -158,6 +165,7 @@ function spawnTiles(map)
     end
     yoff = yoff+40
   end
+  hud.old_rep = map[1][1].represents
 end
 spawnTiles()</script>
 					<eventHandlerList />
@@ -232,23 +240,16 @@ function hud.buildViewTable2(map, x, y)
 end
 
 function hud.updateMap(map)
-  -- format hudinfo.states.map.hexes[y][x]
-  --echo("hello?\n")
-  --display(ipairs(dermap))
-  -- clear it all out
-  spawnTiles(map) 
-  for y, tiles in ipairs(hud.tiles) do 
-    for x, tile in ipairs(tiles) do 
-      tile:setStyleSheet([[border-radius: 10px; background-color: gray;]])
-      tile:echo('')
-    end
-  end
+  --format: map[y][x] = { terrain, elevation, represents, etc }
+  
+  spawnTiles(map)
   for y, columns in ipairs(map) do
     for x, info in ipairs(columns) do
       local tile = string.format("&lt;center&gt;%s", info.elevation) or ''
       if hud.tiles[y] then
         if hud.tiles[y][x] then
         local files = string.format("%s/btui/", getMudletHomeDir())
+        --if not hud.oldmap[y][x].terrain == info.terrain then
           if terrain_conv[info.terrain] == "none" then
             hud.tiles[y][x]:setStyleSheet([[
               background-color:rgba(0,0,0,0);
@@ -258,6 +259,7 @@ function hud.updateMap(map)
               border-image: url(]]..files..terrain_conv[info.terrain]..[[);
               margin: 0.5px;]])
           end
+        --end
           hud.tiles[y][x]:echo(tile, "#FFFFFF", "c10")
           if info.me then
             tokens.player:changeContainer(hud.tiles[y][x])
@@ -266,14 +268,13 @@ function hud.updateMap(map)
             tokens.player:move(zero_to_position(tonumber(cur.bearing_to_center), tonumber(cur.range_to_center)))
           end
           --display(info.contacts)
-          hud.contacts[y][x].represents = info.represents 
-          hud.contacts[y][x]:setStyleSheet([[background-color: rgba(0,0,0,0)]])
-          hud.contacts[y][x]:echo('')
+          hud.contacts[y][x].represents = info.represents
         end
       end
     end--]]
     --echo('\n')
   end
+  hud.oldmap = map
 end</script>
 						<eventHandlerList />
 					</Script>
@@ -352,7 +353,7 @@ end</script>
   local x = zx + ( D * sin(bearing_rads) )
   local y = zy - ( D * cos(bearing_rads) )
   
-  return x-2.5, y-2.5
+  return x, y
 end
 </script>
 				<eventHandlerList />
@@ -517,10 +518,20 @@ end</script>
   end
   uw.qstatus:echo(s)
   if hudinfo.states.heat then
-    local ch, dh = tonumber(hudinfo.states.heat.current), tonumber(hudinfo.states.heat.dissipation)/10
+    local ch, dh = tonumber(hudinfo.states.heat.current)/10, tonumber(hudinfo.states.heat.dissipation)/10
     --formula for a bar: dh + min_bar &lt;=  ch or min_bar
-    uw.qstatus:cecho(string.format("\n&lt;grey&gt;:%s%s&lt;green&gt;:%s%s&lt;yellow&gt;:%s%s&lt;red&gt;:%s%s:", string.rep("|", ch &lt;= dh and ch or dh), string.rep(".", dh-ch &lt;= dh and dh-ch or dh), string.rep("|", ch-dh &lt;= 10 and ch-dh or 10), string.rep(".", dh+10-ch &lt;= 10 and dh+10-ch or 10), string.rep("|", ch-dh-15 &lt;= 5 and ch-dh-5 or 5), string.rep(".", dh+15-ch &lt;= 5 and dh+15-ch or 5), string.rep("|", ch-dh-35 &lt;= 20 and ch-dh-35 or 20), string.rep(".", dh+35-ch &lt;= 20 and dh+35-ch or 20)))
+    local gray = build_heat("gray", 0, dh, ch)
+    local green = build_heat("green", dh, dh+10, ch)
+    local yellow = build_heat("yellow", dh+10, dh+15, ch)
+    local red = build_heat("red", dh+16, dh+35, ch)
+    uw.qstatus:cecho(string.format('\n%s%s%s%s', gray, green, yellow, red))
   end
+end
+
+function build_heat(color, min, max, current)
+  local full = string.rep(":", current-min)
+  local empty = string.rep(".", max-current-min)
+  return string.format("&lt;%s&gt;%s%s", color, full, empty)
 end</script>
 				<eventHandlerList />
 			</Script>
@@ -581,4 +592,8 @@ end</script>
 			</Script>
 		</ScriptGroup>
 	</ScriptPackage>
+	<KeyPackage />
+	<HelpPackage>
+		<helpURL></helpURL>
+	</HelpPackage>
 </MudletPackage>

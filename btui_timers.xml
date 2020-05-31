@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
+	<TriggerPackage />
 	<TimerPackage>
 		<TimerGroup isActive="yes" isFolder="yes" isTempTimer="no" isOffsetTimer="no">
 			<name>btui</name>
@@ -8,7 +9,7 @@
 			<command></command>
 			<packageName>btui</packageName>
 			<time>00:00:00.000</time>
-			<Timer isActive="no" isFolder="no" isTempTimer="no" isOffsetTimer="no">
+			<Timer isActive="yes" isFolder="no" isTempTimer="no" isOffsetTimer="no">
 				<name>Update regularly</name>
 				<script>send("hudinfo gs;;hudinfo t 40;;hudinfo c;;hudinfo we", false)
 </script>
@@ -18,4 +19,11 @@
 			</Timer>
 		</TimerGroup>
 	</TimerPackage>
+	<AliasPackage />
+	<ActionPackage />
+	<ScriptPackage />
+	<KeyPackage />
+	<HelpPackage>
+		<helpURL></helpURL>
+	</HelpPackage>
 </MudletPackage>

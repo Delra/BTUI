@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
+	<TriggerPackage />
+	<TimerPackage />
+	<AliasPackage />
+	<ActionPackage />
+	<ScriptPackage />
 	<KeyPackage>
 		<KeyGroup isActive="yes" isFolder="yes">
 			<name>btui</name>
@@ -176,6 +181,14 @@
 						<keyModifier>671088640</keyModifier>
 					</Key>
 				</KeyGroup>
+				<Key isActive="yes" isFolder="no">
+					<name>Pew Pew PEWWWW</name>
+					<packageName></packageName>
+					<script></script>
+					<command>.fff</command>
+					<keyCode>45</keyCode>
+					<keyModifier>536870912</keyModifier>
+				</Key>
 			</KeyGroup>
 			<Key isActive="yes" isFolder="no">
 				<name>toggle HUD updates</name>
@@ -186,6 +199,7 @@
   hud.active = true
 else
   disableTimer("Update regularly")
+  hudinfo.states.map = {}
   hud.active = false
 end</script>
 				<command></command>
@@ -194,4 +208,7 @@ end</script>
 			</Key>
 		</KeyGroup>
 	</KeyPackage>
+	<HelpPackage>
+		<helpURL></helpURL>
+	</HelpPackage>
 </MudletPackage>
