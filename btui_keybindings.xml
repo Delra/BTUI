@@ -194,7 +194,7 @@
 				<name>toggle HUD updates</name>
 				<packageName></packageName>
 				<script>if not hud.active then
-  sendAll("hudinfo key="..tonumber(math.random(999)), "hudinfo wl", "hudinfo oas", "hudinfo we", "hudinfo as")
+  sendAll("hudinfo key="..tonumber(math.random(999)), "hudinfo sgi", "hudinfo wl", "hudinfo oas", "hudinfo we", "hudinfo as")
   enableTimer("Update regularly")
   hud.active = true
 else
