@@ -483,7 +483,7 @@ end</script>
 				<packageName></packageName>
 				<script>function update_weapons()
   uw.weapons:clear()
-  uw.weapons:echo("Name                Mn/Sm/Me/Lo Dmg Ht CD\n")
+  uw.weapons:echo("Name                Mn/Sm/Me/Lo Dmg Ht CD  Am\n")
   for i=0, #hudinfo.states.weaponstatus do
     local weapon = hudinfo.states.weaponstatus[i]
     uw.weapons:echo(weapon_string(weapon))
@@ -498,8 +498,9 @@ function weapon_string(weapon)
   local damage = info.damage
   local heat = info.heat
   local cd = weapon.status
+  local ammo = hudinfo.states.ammo[weapon.type] and hudinfo.states.ammo[weapon.type].rounds or "-"
   
-  return ( string.format("%s%s%s%s%2.f%s%2.f%s%s\n", name, string.rep(" ", 20-string.len(name)), ranges, " ", damage, "  ", heat, " ", cd) )
+  return ( string.format("%s%s%s%s%2.f%s%2.f%s%2s%s%3s\n", name, string.rep(" ", 20-string.len(name)), ranges, " ", damage, "  ", heat, " ", cd, " ", ammo) )
 end</script>
 				<eventHandlerList />
 			</Script>
@@ -521,7 +522,7 @@ end</script>
     local ch, dh = tonumber(hudinfo.states.heat.current)/10, tonumber(hudinfo.states.heat.dissipation)/10
     --formula for a bar: dh + min_bar &lt;=  ch or min_bar
     local gray = build_heat("gray", 0, dh, ch)
-    local green = build_heat("green", dh, dh+10, ch)
+    local green = build_heat("green", dh, dh+9, ch)
     local yellow = build_heat("yellow", dh+10, dh+15, ch)
     local red = build_heat("red", dh+16, dh+35, ch)
     uw.qstatus:cecho(string.format('\n%s%s%s%s', gray, green, yellow, red))
@@ -529,8 +530,10 @@ end</script>
 end
 
 function build_heat(color, min, max, current)
+  current = current &gt; min and current or min
+  current = current &lt; max and current or max
   local full = string.rep(":", current-min)
-  local empty = string.rep(".", max-current-min)
+  local empty = string.rep(".", max-current)
   return string.format("&lt;%s&gt;%s%s", color, full, empty)
 end</script>
 				<eventHandlerList />

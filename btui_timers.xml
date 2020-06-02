@@ -11,7 +11,7 @@
 			<time>00:00:00.000</time>
 			<Timer isActive="no" isFolder="no" isTempTimer="no" isOffsetTimer="no">
 				<name>Update regularly</name>
-				<script>send("hudinfo gs;;hudinfo t 40;;hudinfo c;;hudinfo we", false)
+				<script>send("hudinfo gs;;hudinfo t 26;;hudinfo c;;hudinfo am;;hudinfo we", false)
 </script>
 				<command></command>
 				<packageName></packageName>
