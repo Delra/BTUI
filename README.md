@@ -1,3 +1,4 @@
+![A screenshot showing the BTUI in action](https://github.com/Delra/BTUI/blob/master/screenshots/liveaction.gif)
 # BTUI
 A Mudlet UI for BTMUX, as well as some basic keybinds to get you going!
 
