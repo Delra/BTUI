@@ -12,7 +12,7 @@
 			<regex></regex>
 			<Alias isActive="yes" isFolder="no">
 				<name>Update view</name>
-				<script>send("hudinfo gs;;hudinfo t 20;;hudinfo c", false)
+				<script>send("hudinfo gs;;hudinfo t 20;;hudinfo c;;hudinfo as;;hudinfo we", false)
 </script>
 				<command></command>
 				<packageName></packageName>

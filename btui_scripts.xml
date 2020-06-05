@@ -131,7 +131,7 @@ hud.container = Geyser.Container:new({
 }, uw.map)
 
 function spawnTiles(map)
-  map = map or { { {represents = {x =0, y = 0} } } }
+  map = map or { { {represents = {x = 0, y = 0} } } }
 -- fix this; errors on load until you reload the script
   local cur = map[1][1].represents
   if hud.old_rep then
@@ -151,7 +151,7 @@ function spawnTiles(map)
         x = xoff, y = yoff + (n % 2 == odd and 0 or 20),
       }, hud.container)
       hud.tiles[i][n]:setStyleSheet([[
-        background-color: blue;
+        background-color: black;
         border-radius: 20px;]])
       hud.contacts[i][n] = Geyser.Label:new({
         name = "hud.contacts."..i.."."..n,

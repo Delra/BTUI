@@ -11,7 +11,12 @@
 			<time>00:00:00.000</time>
 			<Timer isActive="no" isFolder="no" isTempTimer="no" isOffsetTimer="no">
 				<name>Update regularly</name>
-				<script>send("hudinfo gs;;hudinfo t 26;;hudinfo c;;hudinfo am;;hudinfo we", false)
+				<script>-- resets; edit these with care. Or don't. Probably don't. 
+hudinfo.states.ammo = {}
+hudinfo.states.contacts = {}
+
+-- info getters; only add to this, don't remove, unless something major happens.
+send("hudinfo gs;;hudinfo t 26;;hudinfo c;;hudinfo am;;hudinfo as;;hudinfo we", false)
 </script>
 				<command></command>
 				<packageName></packageName>

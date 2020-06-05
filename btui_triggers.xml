@@ -679,7 +679,6 @@ end
 hud.updateMap(hud.buildViewTable2(hudinfo.states.map.hexes, hudinfo.states.current.pos.x, hudinfo.states.current.pos.y))
 update_tokens()
 update_contacts()
-hudinfo.states.contacts = {}
 </script>
 							<triggerType>0</triggerType>
 							<conditonLineDelta>0</conditonLineDelta>
@@ -846,6 +845,60 @@ uw.target_armor:clear()</script>
 					</regexCodeList>
 					<regexCodePropertyList>
 						<integer>3</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>No key</name>
+					<script>deleteLine()
+cecho("&lt;red&gt;\nYO! HEY! PRESS &lt;white&gt;CTRL+H &lt;red&gt;IF YOU ARE IN A MECH!")
+disableTimer("Update regularly")</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>#HUD:???:???:E# No session key set</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>3</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>No unit</name>
+					<script>cecho("\n&lt;tomato&gt;Not in any unit, powering down HUD.")
+--hudinfo.states.map = {}
+disableTimer("Update regularly")
+hudinfo.states.map = {}
+hudinfo.states.contacts = {}
+spawnTiles()
+update_tokens()
+uw.qstatus:clear()
+uw.armor:clear()
+uw.target_armor:clear()
+uw.weapons:clear()
+uw.contacts:clear()
+hud.active = false</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>E# Not in a BattleTech unit</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>0</integer>
 					</regexCodePropertyList>
 				</Trigger>
 			</TriggerGroup>
